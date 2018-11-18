@@ -1,5 +1,12 @@
 import time
 import sys
+import deepLearning
+import numpy as np
+import torch
+from torch import nn
+from torch import optim
+import torch.nn.functional as F
+
 list = ['']
 game = ['']
 my_5_card_hand = []
@@ -7,6 +14,38 @@ round = set()
 myset = set()
 flag_list = [True, True, True]
 
+model = deepLearning.Network(10, 10, [128,128,64])
+criterion = nn.NLLLoss()
+optimizer = optim.Adam(model.parameters(), lr=0.001)
+
+
+
+torch.save(model.state_dict(), 'checkpoint.pth')
+
+state_dict = torch.load('checkpoint.pth')
+
+model = deepLearning.Network(10, 10, [128,128,64])
+# This will throw an error because the tensor sizes are wrong!
+model.load_state_dict(state_dict)
+
+checkpoint = {'input_size': 10,
+              'output_size': 10,
+              'hidden_layers': [each.out_features for each in model.hidden_layers],
+              'state_dict': model.state_dict()}
+
+torch.save(checkpoint, 'checkpoint.pth')
+
+def load_checkpoint(filepath):
+    checkpoint = torch.load(filepath)
+    model = deepLearning.Network(checkpoint['input_size'],
+                             checkpoint['output_size'],
+                             checkpoint['hidden_layers'])
+    model.load_state_dict(checkpoint['state_dict'])
+
+    return model
+
+model = load_checkpoint('checkpoint.pth')
+#print(model)
 
 card_numbers = [
     '6h', '6c', '6s', '6d',
@@ -45,8 +84,17 @@ def get_flop_cards(flop):
     my_5_card_hand.append(card_numbers[int(flop_cd1)])
     my_5_card_hand.append(card_numbers[int(flop_cd2)])
     my_5_card_hand.append(card_numbers[int(flop_cd3)])
+    x = torch.FloatTensor([[0.71,-0.48,0.03,-0.65,0.99,-0.65,-0.14,-0.65,0.03,-0.82]])
+    with torch.no_grad():
+        logits = model.forward(x)
+    ps = F.softmax(logits, dim=1)
+    if ps[0][1] > ps[0][2]:
+        call = 'c'
+    else:
+        call = 'r'
+
     hand_decision = open('../pokercasino/botfiles/botToCasino0','wt')
-    print('r',file=hand_decision)
+    print(call,file=hand_decision)
 
 def first_round(my_hand):
     index_1 = my_hand.find('A')
@@ -66,7 +114,6 @@ def make_flop_bet(my_5_cards):
     print(hand,file=outfile)
     outfile.close()
 
-
 def get_round_num(casinoInfo):
     idx = casinoInfo.find('D')
     round_num = casinoInfo[0:idx]
@@ -78,8 +125,6 @@ def get_round_num(casinoInfo):
         flag_list[0]= True
         flag_list[1]= True
         flag_list[2]= True
-
-
 
 try:
     while True:
@@ -110,7 +155,6 @@ try:
                     flag_turn = get_turn_card(casinoInfo)
                 if 'R' in myset and flag_list[2]:
                     flag_river = get_river_card(casinoInfo)
-
 
 except KeyboardInterrupt:
     print('Quitting the program.')
