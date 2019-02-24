@@ -43,27 +43,35 @@ player_2_raise = False
 random.seed()
 random.shuffle(POKER_BOX)
 
-def decision_at_flop(p2_raise):
+def decision_at_flop_player_1(p2_raise):
     if not p2_raise:
         return 'r'
     else:
         return 'f'
 
-def decision_of_opponent(p1_raise):
+def decision_of_opponent_at_flop(p1_raise):
 
     return 'r'
 
-def decision_at_turn(p2_raise):
+def decision_at_turn_player_1(p2_raise):
     if not p2_raise:
         return 'r'
     else:
         return 'f'
 
-def decision_at_river(p2_raise):
+def decision_of_opponent_at_turn(p1_raise):
+
+    return 'r'
+
+def decision_at_river_player_1(p2_raise):
     if not p2_raise:
         return 'r'
     else:
         return 'f'
+
+def decision_of_opponent_at_river(p1_raise):
+
+    return 'r'
 
 def best_hand(cards):
             # not efficient but for the sake of readability...
@@ -144,22 +152,22 @@ num = Hand(cards).get_score()
 print('score is {}'.format(num))
 
 if button_names[button] == 'player_1':
-    if decision_at_flop(player_2_raise) == 'r':
+    if decision_at_flop_player_1(player_2_raise) == 'r':
         print('player_1 raise at flop')
         pot += 4
         stacks[0] -= 4
         player_1_raise = True
-    elif decision_at_flop(player_2_raise) == 'c':
+    elif decision_at_flop_player_1(player_2_raise) == 'c':
         print('player_1 calls')
         player_1_raise = False
 
-    if decision_of_opponent(player_1_raise) == 'c':
+    if decision_of_opponent_at_flop(player_1_raise) == 'c':
         print('player_2 calls')
         if player_1_raise:
             pot += 4
             stacks[1] -= 4
 
-    elif decision_of_opponent(player_1_raise) == 'r':
+    elif decision_of_opponent_at_flop(player_1_raise) == 'r':
         print('player_2 raise at flop')
         if player_1_raise:
             pot += 8
@@ -170,31 +178,31 @@ if button_names[button] == 'player_1':
             player_2_raise = True
 
     if player_2_raise:
-        if decision_at_flop(player_2_raise) == 'c':
+        if decision_at_flop_player_1(player_2_raise) == 'c':
             pot += 4
             stacks[0] -= 4
 
-        elif decision_at_flop(player_2_raise) == 'f':
+        elif decision_at_flop_player_1(player_2_raise) == 'f':
             print('player_1 folds')
             stacks[1] += pot
             print('player_2 wins ${}'.format(pot))
 
 else:
-    if decision_at_flop(player_1_raise) == 'r':
+    if decision_of_opponent_at_flop(player_1_raise) == 'r':
         print('player_2 raise at flop')
         pot += 4
         stacks[1] -= 4
         player_2_raise = True
-    elif decision_at_flop(player_1_raise) == 'c':
+    elif decision_of_opponent_at_flop(player_1_raise) == 'c':
         print('player_2 calls')
         player_2_raise = False
 
-    if decision_of_opponent(player_1_raise) == 'c':
+    if decision_at_flop_player_1(player_2_raise) == 'c':
         print('player_1 calls')
         if player_2_raise:
             pot += 4
             stacks[0] -= 4
-    elif decision_of_opponent(player_1_raise) == 'r':
+    elif decision_at_flop_player_1(player_2_raise) == 'r':
         print('player_1 raise at flop')
         if player_2_raise:
             pot += 8
@@ -205,10 +213,10 @@ else:
         player_1_raise = True
 
     if player_1_raise:
-        if decision_at_flop(player_1_raise) == 'c':
+        if decision_of_opponent_at_flop(player_1_raise) == 'c':
             pot += 4
             stacks[1] -= 4
-        elif decision_at_flop(player_1_raise) == 'f':
+        elif decision_of_opponent_at_flop(player_1_raise) == 'f':
             print('player_2 folds')
             stacks[0] += pot
             print('player_1 wins ${}'.format(pot))
@@ -234,21 +242,21 @@ print('player 2\'s cards at turn {}'.format(player_2_cards_at_turn))
         # betting at the river ***
 
 if button_names[button] == 'player_1':
-    if decision_at_turn(player_2_raise) == 'r':
+    if decision_at_turn_player_1(player_2_raise) == 'r':
         print('player_1 raise at turn')
         pot += 4
         stacks[0] -= 4
         player_1_raise = True
-    elif decision_at_turn(player_2_raise) == 'c':
+    elif decision_at_turn_player_1(player_2_raise) == 'c':
         print('player_1 calls at turn')
         player_1_raise = False
 
-    if decision_of_opponent(player_1_raise) == 'c':
+    if decision_of_opponent_at_turn(player_1_raise) == 'c':
         print('player_2 calls at turn')
         if player_1_raise:
             pot += 4
             stacks[1] -= 4
-    elif decision_of_opponent(player_1_raise) == 'r':
+    elif decision_of_opponent_at_turn(player_1_raise) == 'r':
         print('player_2 raise at turn')
         if player_1_raise:
             pot += 8
@@ -259,30 +267,30 @@ if button_names[button] == 'player_1':
         player_2_raise = True
 
     if player_2_raise:
-        if decision_at_turn(player_2_raise) == 'c':
+        if decision_at_turn_player_1(player_2_raise) == 'c':
             pot += 4
             stacks[0] -= 4
-        elif decision_at_turn(player_2_raise) == 'f':
+        elif decision_at_turn_player_1(player_2_raise) == 'f':
             print('player_1 folds')
             stacks[1] += pot
             print('player_2 wins ${}'.format(pot))
 
 else:
-    if decision_at_turn(player_1_raise) == 'r':
+    if decision_of_opponent_at_turn(player_1_raise) == 'r':
         print('player_2 raise at turn')
         pot += 4
         stacks[1] -= 4
         player_2_raise = True
-    elif decision_at_turn(player_1_raise) == 'c':
+    elif decision_of_opponent_at_turn(player_1_raise) == 'c':
         print('player_2 calls at turn')
         player_2_raise = False
 
-    if decision_of_opponent(player_1_raise) == 'c':
+    if decision_at_turn_player_1(player_2_raise) == 'c':
         print('player_1 calls at turn')
         if player_2_raise:
             pot += 4
             stacks[0] -= 4
-    elif decision_of_opponent(player_1_raise) == 'r':
+    elif decision_at_turn_player_1(player_2_raise) == 'r':
         print('player_1 raise at turn')
         if player_2_raise:
             pot += 8
@@ -290,10 +298,10 @@ else:
         player_1_raise = True
 
     if player_1_raise:
-        if decision_at_turn(player_1_raise) == 'c':
+        if decision_of_opponent_at_turn(player_1_raise) == 'c':
             pot += 4
             stacks[1] -= 4
-        elif decision_at_turn(player_1_raise) == 'f':
+        elif decision_of_opponent_at_turn(player_1_raise) == 'f':
             print('player_2 folds')
             stacks[0] += pot
             print('player_1 wins ${}'.format(pot))
@@ -314,21 +322,21 @@ print(player_2_cards_at_river)
             # betting at the river ***
 
 if button_names[button] == 'player_1':
-    if decision_at_river(player_2_raise) == 'r':
+    if decision_at_river_player_1(player_2_raise) == 'r':
         print('player_1 raise at river')
         pot += 4
         stacks[0] -= 4
         player_1_raise = True
-    elif decision_at_river(player_2_raise) == 'c':
+    elif decision_at_river_player_1(player_2_raise) == 'c':
         print('player_1 calls at river')
         player_1_raise = False
 
-    if decision_of_opponent(player_1_raise) == 'c':
+    if decision_of_opponent_at_river(player_1_raise) == 'c':
         print('player_2 calls at river')
         if player_1_raise:
             pot += 4
             stacks[1] -= 4
-    elif decision_of_opponent(player_1_raise) == 'r':
+    elif decision_of_opponent_at_river(player_1_raise) == 'r':
         print('player_2 raise at river')
         if player_1_raise:
             pot += 8
@@ -339,31 +347,31 @@ if button_names[button] == 'player_1':
         player_2_raise = True
 
     if player_2_raise:
-        if decision_at_river(player_2_raise) == 'c':
+        if decision_at_river_player_1(player_2_raise) == 'c':
             pot += 4
             stacks[0] -= 4
-        elif decision_at_river(player_2_raise) == 'f':
+        elif decision_at_river_player_1(player_2_raise) == 'f':
             print('player_1 folds')
             stacks[1] += pot
             print('player_2 wins ${}'.format(pot))
 
 else:
-    if decision_at_river(player_1_raise) == 'r':
+    if decision_of_opponent_at_river(player_1_raise) == 'r':
         print('player_2 raise at river')
         pot += 4
         stacks[1] -= 4
         player_2_raise = True
-    elif decision_at_river(player_1_raise) == 'c':
+    elif decision_of_opponent_at_river(player_1_raise) == 'c':
         print('player_2 calls at river')
         player_2_raise = False
 
-    if decision_of_opponent(player_2_raise) == 'c':
+    if decision_at_river_player_1(player_2_raise) == 'c':
         print('player_1 calls at river')
         if player_2_raise:
             pot += 4
             stacks[0] -= 4
 
-    elif decision_of_opponent(player_2_raise) == 'r':
+    elif decision_at_river_player_1(player_2_raise) == 'r':
         print('player_1 raise at river')
         if player_2_raise:
             pot += 8
@@ -374,10 +382,10 @@ else:
         player_1_raise = True
 
     if player_1_raise:
-        if decision_at_river(player_1_raise) == 'c':
+        if decision_of_opponent_at_river(player_1_raise) == 'c':
             pot += 4
             stacks[1] -= 4
-        elif decision_at_river(player_1_raise) == 'f':
+        elif decision_of_opponent_at_river(player_1_raise) == 'f':
             print('player_2 folds')
             stacks[0] += pot
             print('player_1 wins ${}'.format(pot))
